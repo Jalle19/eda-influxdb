@@ -1,0 +1,101 @@
+const fs = require('fs')
+const Influx = require('influx')
+
+getSchemaDefinition = function () {
+  return [
+    {
+      measurement: 'eda',
+      fields: {
+        'flags.away': Influx.FieldType.BOOLEAN,
+        'flags.longAway': Influx.FieldType.BOOLEAN,
+        'flags.overPressure': Influx.FieldType.BOOLEAN,
+        'flags.maxHeating': Influx.FieldType.BOOLEAN,
+        'flags.maxCooling': Influx.FieldType.BOOLEAN,
+        'flags.manualBoost': Influx.FieldType.BOOLEAN,
+        'flags.summerNightCooling': Influx.FieldType.BOOLEAN,
+        'readings.freshAirTemperature': Influx.FieldType.FLOAT,
+        'readings.supplyAirTemperatureAfterHeatRecovery': Influx.FieldType.FLOAT,
+        'readings.supplyAirTemperature': Influx.FieldType.FLOAT,
+        'readings.wasteAirTemperature': Influx.FieldType.FLOAT,
+        'readings.exhaustAirTemperature': Influx.FieldType.FLOAT,
+        'readings.exhaustAirHumidity': Influx.FieldType.INTEGER,
+        'readings.heatRecoverySupplySide': Influx.FieldType.INTEGER,
+        'readings.heatRecoveryExhaustSide': Influx.FieldType.INTEGER,
+        'readings.heatRecoveryTemperatureDifferenceSupplySide': Influx.FieldType.FLOAT,
+        'readings.heatRecoveryTemperatureDifferenceExhaustSide': Influx.FieldType.FLOAT,
+        'readings.mean48HourExhaustHumidity': Influx.FieldType.INTEGER,
+        'readings.cascadeSp': Influx.FieldType.INTEGER,
+        'readings.cascadeP': Influx.FieldType.INTEGER,
+        'readings.cascadeI': Influx.FieldType.INTEGER,
+        'settings.ventilationLevelActual': Influx.FieldType.INTEGER,
+        'settings.ventilationLevelTarget': Influx.FieldType.INTEGER,
+        'settings.temperatureTarget': Influx.FieldType.FLOAT,
+      },
+      tags: []
+    }
+  ]
+}
+
+createPoint = function (summary) {
+  return {
+    measurement: 'eda',
+    fields: {
+      'flags.away': summary.flags.away,
+      'flags.longAway': summary.flags.longAway,
+      'flags.overPressure': summary.flags.overPressure,
+      'flags.maxHeating': summary.flags.maxHeating,
+      'flags.maxCooling': summary.flags.maxCooling,
+      'flags.manualBoost': summary.flags.manualBoost,
+      'flags.summerNightCooling': summary.flags.summerNightCooling,
+      'readings.freshAirTemperature': summary.readings.freshAirTemperature,
+      'readings.supplyAirTemperatureAfterHeatRecovery': summary.readings.supplyAirTemperatureAfterHeatRecovery,
+      'readings.supplyAirTemperature': summary.readings.supplyAirTemperature,
+      'readings.wasteAirTemperature': summary.readings.wasteAirTemperature,
+      'readings.exhaustAirTemperature': summary.readings.exhaustAirTemperature,
+      'readings.exhaustAirHumidity': summary.readings.exhaustAirHumidity,
+      'readings.heatRecoverySupplySide': summary.readings.heatRecoverySupplySide,
+      'readings.heatRecoveryExhaustSide': summary.readings.heatRecoveryExhaustSide,
+      'readings.heatRecoveryTemperatureDifferenceSupplySide': summary.readings.heatRecoveryTemperatureDifferenceSupplySide,
+      'readings.heatRecoveryTemperatureDifferenceExhaustSide': summary.readings.heatRecoveryTemperatureDifferenceExhaustSide,
+      'readings.mean48HourExhaustHumidity': summary.readings.mean48HourExhaustHumidity,
+      'readings.cascadeSp': summary.readings.cascadeSp,
+      'readings.cascadeP': summary.readings.cascadeP,
+      'readings.cascadeI': summary.readings.cascadeI,
+      'settings.ventilationLevelActual': summary.settings.ventilationLevelActual,
+      'settings.ventilationLevelTarget': summary.settings.ventilationLevelTarget,
+      'settings.temperatureTarget': summary.settings.temperatureTarget,
+    },
+  }
+}
+
+const requiredEnvVars = [
+  'INFLUX_HOST',
+  'INFLUX_DATABASE',
+  'INFLUX_USERNAME',
+  'INFLUX_PASSWORD',
+]
+
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    throw new Error(`${requiredEnvVars.join(', ')} must be specified`)
+  }
+}
+
+const influx = new Influx.InfluxDB({
+  host: process.env.INFLUX_HOST,
+  database: process.env.INFLUX_DATABASE,
+  username: process.env.INFLUX_USERNAME,
+  password: process.env.INFLUX_PASSWORD,
+  schema: getSchemaDefinition(),
+})
+
+influx.getDatabaseNames().then((names) => {
+  if (!names.includes(process.env.INFLUX_DATABASE)) {
+    throw new Error(`The specified database "${process.env.INFLUX_DATABASE}" does not exist`)
+  }
+
+  const jsonData = fs.readFileSync(0, 'utf-8')
+  const summary = JSON.parse(jsonData)
+
+  influx.writePoints([createPoint(summary)])
+})
