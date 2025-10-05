@@ -25,6 +25,7 @@ getSchemaDefinition = function () {
         'readings.heatRecoveryTemperatureDifferenceSupplySide': Influx.FieldType.FLOAT,
         'readings.heatRecoveryTemperatureDifferenceExhaustSide': Influx.FieldType.FLOAT,
         'readings.mean48HourExhaustHumidity': Influx.FieldType.INTEGER,
+        'readings.temperatureControlState': Influx.FieldType.STRING,
         'readings.cascadeSp': Influx.FieldType.INTEGER,
         'readings.cascadeP': Influx.FieldType.INTEGER,
         'readings.cascadeI': Influx.FieldType.INTEGER,
@@ -37,6 +38,7 @@ getSchemaDefinition = function () {
         'settings.longAwayVentilationLevel': Influx.FieldType.INTEGER,
         'settings.longAwayTemperatureReduction': Influx.FieldType.INTEGER,
         'settings.temperatureTarget': Influx.FieldType.FLOAT,
+        'settings.temperatureControlMode': Influx.FieldType.INTEGER,
       },
       tags: []
     }
@@ -69,6 +71,7 @@ createPoint = function (summary) {
       'readings.cascadeSp': summary.readings.cascadeSp,
       'readings.cascadeP': summary.readings.cascadeP,
       'readings.cascadeI': summary.readings.cascadeI,
+      'readings.temperatureControlState': summary.readings.temperatureControlState,
       'readings.overPressureTimeLeft': summary.readings.overPressureTimeLeft,
       'readings.ventilationLevelActual': summary.readings.ventilationLevelActual,
       'readings.ventilationLevelTarget': summary.readings.ventilationLevelTarget,
@@ -78,6 +81,7 @@ createPoint = function (summary) {
       'settings.longAwayVentilationLevel': summary.settings.longAwayVentilationLevel,
       'settings.longAwayTemperatureReduction': summary.settings.longAwayTemperatureReduction,
       'settings.temperatureTarget': summary.settings.temperatureTarget,
+      'settings.temperatureControlMode': summary.settings.temperatureControlMode,
     },
   }
 }
