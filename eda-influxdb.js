@@ -82,6 +82,15 @@ createPoint = function (summary) {
       'settings.longAwayTemperatureReduction': summary.settings.longAwayTemperatureReduction,
       'settings.temperatureTarget': summary.settings.temperatureTarget,
       'settings.temperatureControlMode': summary.settings.temperatureControlMode,
+      'settings.coolingAllowed': summary.settings.coolingAllowed,
+      'settings.heatingAllowed': summary.settings.heatingAllowed,
+      'settings.awayCoolingAllowed': summary.settings.awayCoolingAllowed,
+      'settings.awayHeatingAllowed': summary.settings.awayHeatingAllowed,
+      'settings.longAwayCoolingAllowed': summary.settings.longAwayCoolingAllowed,
+      'settings.longAwayHeatingAllowed': summary.settings.longAwayHeatingAllowed,
+      'settings.defrostingAllowed': summary.settings.defrostingAllowed,
+      'settings.supplyFanOverPressure': summary.settings.supplyFanOverPressure,
+      'settings.exhaustFanOverPressure': summary.settings.exhaustFanOverPressure,
     },
   }
 }
