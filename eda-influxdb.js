@@ -39,6 +39,15 @@ getSchemaDefinition = function () {
         'settings.longAwayTemperatureReduction': Influx.FieldType.INTEGER,
         'settings.temperatureTarget': Influx.FieldType.FLOAT,
         'settings.temperatureControlMode': Influx.FieldType.INTEGER,
+        'settings.coolingAllowed': Influx.FieldType.BOOLEAN,
+        'settings.heatingAllowed': Influx.FieldType.BOOLEAN,
+        'settings.awayCoolingAllowed': Influx.FieldType.BOOLEAN,
+        'settings.awayHeatingAllowed': Influx.FieldType.BOOLEAN,
+        'settings.longAwayCoolingAllowed': Influx.FieldType.BOOLEAN,
+        'settings.longAwayHeatingAllowed': Influx.FieldType.BOOLEAN,
+        'settings.defrostingAllowed': Influx.FieldType.BOOLEAN,
+        'settings.supplyFanOverPressure': Influx.FieldType.INTEGER,
+        'settings.exhaustFanOverPressure': Influx.FieldType.INTEGER,
       },
       tags: []
     }
